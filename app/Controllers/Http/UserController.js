@@ -21,7 +21,7 @@ class UserController {
    * @param {View} ctx.view
    */
   async index ({ request, response }) {
-    const users = await User.all();
+    const users = await User.query().with('following').with('followers').fetch();
 
     return response.status(200).json(users);
   }
@@ -63,7 +63,28 @@ class UserController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ auth, params, request, response }) {
+    try {
+      const user = await auth.getUser();
+      const data = request.only(['username', 'email'])
+
+      if(data.email) {
+        const emailExists = !!(await User.findBy('email', data.email));
+
+        if (emailExists) {
+          return response.status(401).json({error: 'email already exists'});
+        }
+      }
+
+      user.merge(data);
+      await user.save();
+
+      return response.json({"user": user});
+
+    } catch (error) {
+      console.log(error);
+      return response.send('Missing or invalid jwt token')
+    }
   }
 
   /**
@@ -75,6 +96,30 @@ class UserController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+  }
+
+  async follow({auth, params, response}) {
+    const user = await auth.getUser();
+
+    try {
+      if (user.id == params.id) {
+        return response.status(401).json({error: "you cannot follow yourself"});
+      }
+
+      const isFollowing = await user.following().where('user_id', params.id).getCount();
+      if (isFollowing != 0) {
+        return response.status(401).json({error: "you are already following"});
+      }
+
+      await user.following().attach(params.id)
+      return response.status(200).json("success");
+    } catch(e) {
+      console.log(e);
+      return response.status(401).json({error: "you cannot follow"});
+    }
+
+
+
   }
 }
 

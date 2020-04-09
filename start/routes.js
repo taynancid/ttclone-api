@@ -23,6 +23,8 @@ Route.get('/', () => {
 Route.group(() => {
   Route.get('users', 'UserController.index')
   Route.post('users', 'UserController.store')
+  Route.put('users', 'UserController.update').middleware(['auth'])
+  Route.post('follow/:id', 'UserController.follow').middleware(['auth'])
 
   Route.post('login', 'SessionController.store')
 }).prefix('api/v1')
