@@ -26,5 +26,9 @@ Route.group(() => {
   Route.put('users', 'UserController.update').middleware(['auth'])
   Route.post('follow/:id', 'UserController.follow').middleware(['auth'])
 
+  Route.get('tweets', 'TweetController.index')
+  Route.post('tweets', 'TweetController.store').middleware(['auth'])
+  Route.delete('tweets/:id', 'TweetController.destroy').middleware(['auth'])
+
   Route.post('login', 'SessionController.store')
 }).prefix('api/v1')
