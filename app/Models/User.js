@@ -37,6 +37,14 @@ class User extends Model {
     ).pivotTable('followers')
   }
 
+  likes() {
+    return this.belongsToMany(
+      'App/Models/Tweet',
+      'user_id',
+      'tweet_id'
+    ).pivotTable('likes')
+  }
+
   tweets() {
     return this.hasMany('App/Models/Tweet');
   }

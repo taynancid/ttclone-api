@@ -30,5 +30,8 @@ Route.group(() => {
   Route.post('tweets', 'TweetController.store').middleware(['auth'])
   Route.delete('tweets/:id', 'TweetController.destroy').middleware(['auth'])
 
+  Route.post('like/:tweet_id', 'LikeController.store').middleware(['auth'])
+  Route.delete('like/:tweet_id', 'LikeController.destroy').middleware(['auth'])
+
   Route.post('login', 'SessionController.store')
 }).prefix('api/v1')

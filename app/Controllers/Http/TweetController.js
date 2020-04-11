@@ -54,18 +54,6 @@ class TweetController {
   }
 
   /**
-   * Display a single tweet.
-   * GET tweets/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
    * Delete a tweet with id.
    * DELETE tweets/:id
    *
