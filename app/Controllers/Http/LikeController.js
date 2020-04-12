@@ -46,6 +46,27 @@ class LikeController {
    * @param {Response} ctx.response
    */
   async destroy ({ auth, params, response }) {
+    const user = await auth.getUser();
+    const tweet = await Tweet.find(params.tweet_id);
+
+    if(!tweet) {
+      return response.status(400).json({error: "tweet not found"});
+    }
+
+    const alreadyLiked = await Tweet.query()
+      .whereHas('likedBy', (builder) => {
+        builder
+          .where('user_id', '=', user.id)
+          .where('tweet_id', '=', tweet.id)
+      })
+      .fetch()
+
+    if (alreadyLiked.toJSON().length === 0) {
+      return response.status(400).json({error: "already disliked"});
+    }
+
+    await user.likes().detach(tweet.id);
+
     return response.json("disliked");
   }
 }

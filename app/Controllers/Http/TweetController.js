@@ -21,7 +21,7 @@ class TweetController {
    * @param {View} ctx.view
    */
   async index ({ request, response }) {
-    const tweets = await Tweet.query().with('user').fetch();
+    const tweets = await Tweet.query().with('user').with('replies').with('repliesTo').fetch();
 
     return response.status(200).json(tweets);
   }

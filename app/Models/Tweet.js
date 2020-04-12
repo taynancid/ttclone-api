@@ -15,6 +15,22 @@ class Tweet extends Model {
       'user_id'
     ).pivotTable('likes')
   }
+
+  replies() {
+    return this.belongsToMany(
+      'App/Models/Tweet',
+      'tweet_id',
+      'reply_id'
+    ).pivotTable('replies');
+  }
+
+  repliesTo() {
+    return this.belongsToMany(
+      'App/Models/Tweet',
+      'reply_id',
+      'tweet_id'
+    ).pivotTable('replies');
+  }
 }
 
 module.exports = Tweet

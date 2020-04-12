@@ -28,6 +28,7 @@ Route.group(() => {
 
   Route.get('tweets', 'TweetController.index')
   Route.post('tweets', 'TweetController.store').middleware(['auth'])
+  Route.post('reply', 'ReplyController.store').middleware(['auth'])
   Route.delete('tweets/:id', 'TweetController.destroy').middleware(['auth'])
 
   Route.post('like/:tweet_id', 'LikeController.store').middleware(['auth'])
