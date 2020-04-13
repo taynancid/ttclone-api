@@ -17,19 +17,19 @@ class Tweet extends Model {
   }
 
   replies() {
-    return this.belongsToMany(
+    return this.hasMany(
       'App/Models/Tweet',
-      'tweet_id',
-      'reply_id'
-    ).pivotTable('replies');
+      'id',
+      'replies_to_id'
+    );
   }
 
   repliesTo() {
-    return this.belongsToMany(
+    return this.belongsTo(
       'App/Models/Tweet',
-      'reply_id',
-      'tweet_id'
-    ).pivotTable('replies');
+      'replies_to_id',
+      'id'
+    );
   }
 }
 

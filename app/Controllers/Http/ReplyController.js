@@ -58,15 +58,11 @@ class ReplyController {
       return response.status(400).json({error: 'tweet doesnt exists'});
     }
 
-
-
     if (validation.fails()) {
       return response.status(401).json({error: 'validation failed'});
     }
 
-    const tweet = await user.tweets().create({text: data.text, replies_to: data.tweet_id});
-
-    await tweet.repliesTo().attach(data.tweet_id);
+    const tweet = await user.tweets().create({text: data.text, replies_to_id: data.tweet_id});
 
     return response.json(tweet);
   }

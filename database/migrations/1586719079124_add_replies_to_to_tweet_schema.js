@@ -6,7 +6,7 @@ const Schema = use('Schema')
 class AddRepliesToToTweetSchema extends Schema {
   up () {
     this.table('tweets', (table) => {
-      table.integer('replies_to')
+      table.integer('replies_to_id')
     })
   }
 
