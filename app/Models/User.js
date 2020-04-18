@@ -17,6 +17,14 @@ class User extends Model {
     })
   }
 
+  static get hidden () {
+    return ['password']
+  }
+
+  static get visible() {
+    return ['id', 'username', 'email', 'birthday_date', 'bio', 'photo_url', 'cover_url']
+  }
+
   tokens () {
     return this.hasMany('App/Models/Token')
   }

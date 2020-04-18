@@ -1,6 +1,8 @@
 'use strict'
 
 const User = use('App/Models/User')
+const Helpers = use('Helpers')
+const Drive = use('Drive')
 const { validateAll } = use('Validator')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -66,7 +68,8 @@ class UserController {
   async update ({ auth, params, request, response }) {
     try {
       const user = await auth.getUser();
-      const data = request.only(['username', 'email'])
+      const data = request.all();
+
 
       if(data.email) {
         const emailExists = !!(await User.findBy('email', data.email));
@@ -76,7 +79,50 @@ class UserController {
         }
       }
 
-      user.merge(data);
+      const profilePic = request.file('profile_pic', {
+        types: ['image'],
+        size: '2mb'
+      })
+
+      if (profilePic) {
+        const profilePicURL = `${Date.now()}-${profilePic.clientName}`;
+
+        await profilePic.move(Helpers.tmpPath('uploads'),{
+          name: profilePicURL,
+          overwrite: true
+        })
+
+        if (!profilePic.moved()) {
+          return profilePic.error()
+        }
+      }
+
+      const coverPic = request.file('cover_pic', {
+        types: ['image'],
+        size: '2mb'
+      })
+
+      if (coverPic) {
+        const coverPicURL = `${Date.now()}-${coverPic.clientName}`;
+
+        await coverPic.move(Helpers.tmpPath('uploads'),{
+          name: coverPicURL,
+          overwrite: true
+        })
+
+        if (!coverPic.moved()) {
+          return coverPic.error()
+        }
+      }
+
+      const profilePicPath = Helpers.tmpPath(`upload/${profilePic.name}`)
+
+      user.merge({
+        ...data,
+        photo_url: profilePic ? profilePic.fileName  : null,
+        cover_url: coverPic ? coverPic.fileName : null
+      });
+
       await user.save();
 
       return response.json({"user": user});
