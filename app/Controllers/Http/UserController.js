@@ -97,30 +97,9 @@ class UserController {
         }
       }
 
-      const coverPic = request.file('cover_pic', {
-        types: ['image'],
-        size: '2mb'
-      })
-
-      if (coverPic) {
-        const coverPicURL = `${Date.now()}-${coverPic.clientName}`;
-
-        await coverPic.move(Helpers.tmpPath('uploads'),{
-          name: coverPicURL,
-          overwrite: true
-        })
-
-        if (!coverPic.moved()) {
-          return coverPic.error()
-        }
-      }
-
-      const profilePicPath = Helpers.tmpPath(`upload/${profilePic.name}`)
-
       user.merge({
         ...data,
         photo_url: profilePic ? profilePic.fileName  : null,
-        cover_url: coverPic ? coverPic.fileName : null
       });
 
       await user.save();

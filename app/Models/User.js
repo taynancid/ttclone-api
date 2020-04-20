@@ -1,10 +1,8 @@
 'use strict'
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
-
-/** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash')
+const Env = use('Env')
 
 class User extends Model {
   static boot () {
@@ -21,8 +19,16 @@ class User extends Model {
     return ['password']
   }
 
+  static get computed() {
+    return ['avatar_url']
+  }
+
   static get visible() {
-    return ['id', 'username', 'email', 'birthday_date', 'bio', 'photo_url', 'cover_url']
+    return ['id', 'username', 'email', 'birthday_date', 'bio', 'cover_url', 'avatar_url']
+  }
+
+  getAvatarUrl({photo_url}) {
+    return `${Env.get('APP_URL')}/images/${photo_url}`
   }
 
   tokens () {

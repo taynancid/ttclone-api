@@ -35,4 +35,7 @@ Route.group(() => {
   Route.delete('like/:tweet_id', 'LikeController.destroy').middleware(['auth'])
 
   Route.post('login', 'SessionController.store')
+
 }).prefix('api/v1')
+
+Route.get('images/:path', 'ImageController.show')
