@@ -71,6 +71,7 @@ class UserController {
       const data = request.all();
 
 
+
       if(data.email) {
         const emailExists = !!(await User.findBy('email', data.email));
 
@@ -81,10 +82,11 @@ class UserController {
 
       const profilePic = request.file('profile_pic', {
         types: ['image'],
-        size: '2mb'
+        size: '10mb'
       })
 
-      if (profilePic) {
+
+      if (profilePic !== null) {
         const profilePicURL = `${Date.now()}-${profilePic.clientName}`;
 
         await profilePic.move(Helpers.tmpPath('uploads'),{
@@ -99,7 +101,7 @@ class UserController {
 
       user.merge({
         ...data,
-        photo_url: profilePic ? profilePic.fileName  : null,
+        photo_url: profilePic !== null ? profilePic.fileName  : user.photo_url,
       });
 
       await user.save();
@@ -108,7 +110,7 @@ class UserController {
 
     } catch (error) {
       console.log(error);
-      return response.send('Missing or invalid jwt token')
+      return response.send('Error')
     }
   }
 
