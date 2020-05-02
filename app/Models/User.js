@@ -15,20 +15,24 @@ class User extends Model {
     })
   }
 
-  static get hidden () {
+  static get hidden() {
     return ['password']
   }
 
   static get computed() {
-    return ['avatar_url']
+    return ['avatar_url', 'full_cover_url']
   }
 
   static get visible() {
-    return ['id', 'username', 'email', 'birthday_date', 'bio', 'cover_url', 'avatar_url']
+    return ['id', 'username', 'email', 'birthday_date', 'bio', 'full_cover_url', 'avatar_url']
   }
 
   getAvatarUrl({photo_url}) {
     return `${Env.get('APP_URL')}/images/${photo_url}`
+  }
+
+  getFullCoverUrl({cover_url}) {
+    return `${Env.get('APP_URL')}/images/${cover_url}`
   }
 
   tokens () {

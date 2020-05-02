@@ -70,8 +70,6 @@ class UserController {
       const user = await auth.getUser();
       const data = request.all();
 
-
-
       if(data.email) {
         const emailExists = !!(await User.findBy('email', data.email));
 
@@ -84,7 +82,6 @@ class UserController {
         types: ['image'],
         size: '10mb'
       })
-
 
       if (profilePic !== null) {
         const profilePicURL = `${Date.now()}-${profilePic.clientName}`;
@@ -99,9 +96,28 @@ class UserController {
         }
       }
 
+      const coverPic = request.file('cover_pic', {
+        types: ['image'],
+        size: '10mb'
+      })
+
+      if (coverPic !== null) {
+        const coverPicURL = `${Date.now()}-${coverPic.clientName}`;
+
+        await coverPic.move(Helpers.tmpPath('uploads'),{
+          name: coverPicURL,
+          overwrite: true
+        })
+
+        if (!coverPic.moved()) {
+          return coverPic.error()
+        }
+      }
+
       user.merge({
         ...data,
-        photo_url: profilePic !== null ? profilePic.fileName  : user.photo_url,
+        photo_url: profilePic !== null ? profilePic.fileName : user.photo_url,
+        cover_url: coverPic !== null ? coverPic.fileName : user.cover_url,
       });
 
       await user.save();
