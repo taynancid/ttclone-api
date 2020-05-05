@@ -24,7 +24,7 @@ class User extends Model {
   }
 
   static get visible() {
-    return ['id', 'username', 'email', 'birthday_date', 'bio', 'full_cover_url', 'avatar_url']
+    return ['id', 'username', 'email', 'birthday_date', 'bio', 'full_cover_url', 'avatar_url', 'name', 'created_at']
   }
 
   getAvatarUrl({photo_url}) {
