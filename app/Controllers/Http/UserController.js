@@ -13,29 +13,25 @@ const { validateAll } = use('Validator')
  * Resourceful controller for interacting with users
  */
 class UserController {
-  /**
-   * Show a list of all users.
-   * GET users
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
+
   async index ({ request, response }) {
     const users = await User.query().with('following').with('followers').fetch();
 
     return response.status(200).json(users);
   }
 
-  /**
-   * Create/save a new user.
-   * POST users
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
+  async showUser({ auth, response }) {
+    try {
+      const user = await auth.getUser();
+      return response.json({"user": user});
+    } catch (e) {
+      console.log(e);
+      return response.json("error");
+    }
+
+  }
+
+
   async store ({ auth, request, response }) {
     const data = request.only(['username', 'email', 'password', 'password_confirmation'])
 
@@ -57,14 +53,6 @@ class UserController {
     return response.json({"user": user, "access_token": accessToken})
   }
 
-  /**
-   * Update user details.
-   * PUT or PATCH users/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ auth, params, request, response }) {
     try {
       const user = await auth.getUser();
@@ -130,14 +118,6 @@ class UserController {
     }
   }
 
-  /**
-   * Delete a user with id.
-   * DELETE users/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async destroy ({ params, request, response }) {
   }
 
