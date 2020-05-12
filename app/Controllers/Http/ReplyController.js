@@ -11,16 +11,22 @@ const { validateAll } = use('Validator')
  * Resourceful controller for interacting with replies
  */
 class ReplyController {
-  /**
-   * Show a list of all replies.
-   * GET replies
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+
+  async index ({ params, response, auth }) {
+    const tweetId = await params.tweet_id;
+    const user = await auth.getUser();
+
+    const tweetExists = await Tweet.find(tweetId)
+
+    if (!tweetExists) {
+      return response.status(400).json({error: 'tweet doesnt exists'});
+    }
+
+    const tweetReplies = await tweetExists.replies().with('user').fetch();
+
+    return response.json(tweetReplies);
+
+
   }
 
   /**

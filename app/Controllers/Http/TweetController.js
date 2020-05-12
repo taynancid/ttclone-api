@@ -25,6 +25,7 @@ class TweetController {
       .with('user')
       .with('replies')
       .with('repliesTo')
+      .with('likedBy')
       .orderBy('created_at', 'desc').fetch();
 
     return response.status(200).json(tweets);
