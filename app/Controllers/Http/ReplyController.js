@@ -22,7 +22,12 @@ class ReplyController {
       return response.status(400).json({error: 'tweet doesnt exists'});
     }
 
-    const tweetReplies = await tweetExists.replies().with('user').fetch();
+    const tweetReplies = await tweetExists.replies()
+    .with('user')
+    .with('replies')
+    .with('repliesTo')
+    .with('likedBy')
+    .orderBy('created_at', 'desc').fetch();
 
     return response.json(tweetReplies);
 
