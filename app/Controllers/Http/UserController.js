@@ -140,9 +140,27 @@ class UserController {
       console.log(e);
       return response.status(401).json({error: "you cannot follow"});
     }
+  }
 
+  async unfollow({auth, params, response}) {
+    const user = await auth.getUser();
 
+    try {
+      if (user.id == params.id) {
+        return response.status(401).json({error: "you cannot unfollow yourself"});
+      }
 
+      const isFollowing = await user.following().where('user_id', params.id).getCount();
+      if (isFollowing == 0) {
+        return response.status(401).json({error: "you do not follow this user"});
+      }
+
+      await user.following().detach(params.id)
+      return response.status(200).json("success");
+    } catch(e) {
+      console.log(e);
+      return response.status(401).json({error: "you cannot follow"});
+    }
   }
 }
 
