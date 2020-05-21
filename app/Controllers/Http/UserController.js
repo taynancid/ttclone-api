@@ -45,8 +45,14 @@ class UserController {
     if (validation.fails()) {
       return response.status(401).json({error: 'validation failed'});
     }
+
+
     delete data.password_confirmation
-    const user = await User.create(data)
+    const user = await User.create({
+      ...data,
+      photo_url: 'avatar-default.jpg',
+      cover_url: 'avatar-default.jpg',
+    })
 
     let accessToken = await auth.generate(user)
 
