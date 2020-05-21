@@ -20,8 +20,17 @@ class TweetController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response }) {
+  async index ({ auth, request, response }) {
+    const user = await auth.getUser();
+
+    const followingIds = await user.following().ids();
+
+    const idsToShowTweets = [...followingIds, user.id];
+
     const tweets = await Tweet.query()
+      .whereHas('user', (builder) => {
+        builder.whereIn('id', idsToShowTweets)
+      })
       .with('user')
       .with('replies')
       .with('repliesTo')
