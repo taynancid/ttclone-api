@@ -15,7 +15,14 @@ const { validateAll } = use('Validator')
 class UserController {
 
   async index ({ request, response }) {
-    const users = await User.query().with('following').with('followers').fetch();
+    const searchText = request.input('searchText');
+    let users = [];
+
+    if (searchText) {
+      users = await User.query().where('username', 'like', `%${searchText}%`).with('following').with('followers').fetch();
+    } else {
+      users = await User.query().with('following').with('followers').fetch();
+    }
 
     return response.status(200).json(users);
   }
